@@ -1,0 +1,275 @@
+:root {
+  --accent: #1f4e79;
+  --accent-bg: #d9e2f3;
+  --border: #bfbfbf;
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --muted: #555555;
+  --toc-width: 280px;
+
+  /* Kodeblokke er altid mørke (cyberpunk-tema), uanset sidens eget lys/mørkt-tema,
+     så syntaksfarverne fra --highlight-style=cyberpunk.theme altid har den kontrast
+     og baggrund, de faktisk er designet til. */
+  --code-bg: #0b0e1a;
+  --code-fg: #e6e6f5;
+  --code-border: #3a2a5a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #6fa8dc;
+    --accent-bg: #1b2a3d;
+    --border: #444444;
+    --bg: #14181f;
+    --fg: #e6e6e6;
+    --muted: #a0a0a0;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.55;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+}
+
+header#title-block-header {
+  text-align: center;
+  border-bottom: 3px solid var(--accent);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+header#title-block-header h1.title {
+  color: var(--accent);
+  font-size: 2.1rem;
+  margin-bottom: 0.25rem;
+}
+
+header#title-block-header p.subtitle {
+  font-size: 1.15rem;
+  color: var(--muted);
+  margin: 0.25rem 0;
+}
+
+header#title-block-header p.author,
+header#title-block-header p.date {
+  margin: 0.15rem 0;
+  color: var(--muted);
+}
+
+h1, h2, h3 { color: var(--accent); }
+
+h1 {
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.3rem;
+  margin-top: 3rem;
+}
+
+h2 { margin-top: 2.2rem; }
+
+nav#TOC {
+  background: var(--accent-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+  margin: 2rem 0;
+}
+
+nav#TOC::before {
+  content: "Indhold";
+  display: block;
+  font-weight: bold;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+nav#TOC ul { padding-left: 1.2rem; }
+nav#TOC a { text-decoration: none; }
+nav#TOC a:hover { text-decoration: underline; }
+
+/* Fast venstre-sidebar på brede skærme; falder tilbage til normal, indlejret
+   placering øverst på smalle skærme (inkl. telefonbredde). */
+@media (min-width: 900px) {
+  body {
+    max-width: 1180px;
+    margin: 0 auto;
+    margin-left: calc(var(--toc-width) + 2.5rem);
+  }
+
+  nav#TOC {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--toc-width);
+    height: 100vh;
+    overflow-y: auto;
+    margin: 0;
+    border: none;
+    border-right: 1px solid var(--border);
+    border-radius: 0;
+    padding: 1.75rem 1.5rem;
+  }
+
+  nav#TOC::before { margin-top: 0; }
+  nav#TOC { font-size: 0.88rem; }
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.2rem 0;
+  font-size: 0.95rem;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  border: 1px solid var(--code-border);
+  border-radius: 6px;
+  padding: 1.1rem 1.25rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  box-shadow: 0 0 12px rgba(255, 47, 176, 0.08), 0 0 12px rgba(0, 229, 255, 0.06);
+}
+
+/* Pandocs eget indlejrede <style> sætter ".sourceCode { overflow: visible; }" (klasse-
+   selektor), som pga. højere specificitet altid slår "pre { overflow-x: auto; }" ovenfor,
+   uanset cascade-rækkefølge. Uden denne override males pre'ens farvede border ved dens
+   oprindelige, uudvidede bredde, mens koden blot visuelt "stikker ud" og rulles i den ydre
+   div.sourceCode i stedet — så borderen ikke følger med ved horisontal scrolling. */
+pre.sourceCode {
+  overflow-x: auto;
+}
+
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+img {
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  display: block;
+  margin: 1rem 0;
+}
+
+details {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 1.2rem 0;
+  overflow: hidden;
+}
+
+details > summary {
+  cursor: pointer;
+  padding: 0.6rem 1rem;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-weight: 600;
+  list-style: none;
+  user-select: none;
+}
+
+details > summary::-webkit-details-marker { display: none; }
+
+details > summary::before {
+  content: "▶ ";
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+details > summary::after {
+  content: none;
+}
+
+details pre {
+  margin: 0;
+  border: none;
+  border-top: 1px solid var(--code-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Side-om-side sammenligning: ::: {.compare} med to indlejrede ::: {.compare-side} i markdown. */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .compare {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+.compare-side {
+  min-width: 0;
+}
+
+.compare-side > :first-child {
+  margin-top: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border);
+  color: var(--muted);
+}
+
+.compare-side:last-child > :first-child {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.compare-side pre {
+  margin-top: 0;
+}
+
+blockquote {
+  border-left: 4px solid var(--accent);
+  margin: 1rem 0;
+  padding: 0.2rem 1rem;
+  color: var(--muted);
+}
+
+a { color: var(--accent); }
