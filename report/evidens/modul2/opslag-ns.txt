@@ -1,0 +1,14 @@
+Spørger 8.8.8.8:53 om github.com (NS)
+Transaktions-ID: 0x57da
+Transport: UDP
+Flags: QR=1 AA=0 TC=0 RD=1 RA=1  RCODE=NOERROR
+Spørgsmål: 1  Svar: 8  Authority: 0  Additional: 0
+Svar:
+  github.com                   TTL 2425   NS     ns-1283.awsdns-32.org
+  github.com                   TTL 2425   NS     dns3.p08.nsone.net
+  github.com                   TTL 2425   NS     dns2.p08.nsone.net
+  github.com                   TTL 2425   NS     ns-1707.awsdns-21.co.uk
+  github.com                   TTL 2425   NS     ns-520.awsdns-01.net
+  github.com                   TTL 2425   NS     ns-421.awsdns-52.com
+  github.com                   TTL 2425   NS     dns4.p08.nsone.net
+  github.com                   TTL 2425   NS     dns1.p08.nsone.net

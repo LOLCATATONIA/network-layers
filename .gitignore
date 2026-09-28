@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.pyc
+
+# Private nøgler (modul 4): må aldrig ende i et offentligt repo
+key.pem
+*.key
+
+# Arbejdsdokumenter, ikke en del af afleveringen
+guides/

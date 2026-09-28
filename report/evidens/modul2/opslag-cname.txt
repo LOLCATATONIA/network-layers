@@ -1,0 +1,7 @@
+Spørger 8.8.8.8:53 om www.github.com (CNAME)
+Transaktions-ID: 0xf417
+Transport: UDP
+Flags: QR=1 AA=0 TC=0 RD=1 RA=1  RCODE=NOERROR
+Spørgsmål: 1  Svar: 1  Authority: 0  Additional: 0
+Svar:
+  www.github.com               TTL 3591   CNAME  github.com

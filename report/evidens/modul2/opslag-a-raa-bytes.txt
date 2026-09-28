@@ -1,0 +1,9 @@
+Spørger 8.8.8.8:53 om github.com (A)
+Transaktions-ID: 0x072e
+Forespørgsel (28 bytes): 07 2e 01 00 00 01 00 00 00 00 00 00 06 67 69 74 68 75 62 03 63 6f 6d 00 00 01 00 01
+Svar (44 bytes): 07 2e 81 80 00 01 00 01 00 00 00 00 06 67 69 74 68 75 62 03 63 6f 6d 00 00 01 00 01 c0 0c 00 01 00 01 00 00 00 3c 00 04 8c 52 79 03
+Transport: UDP
+Flags: QR=1 AA=0 TC=0 RD=1 RA=1  RCODE=NOERROR
+Spørgsmål: 1  Svar: 1  Authority: 0  Additional: 0
+Svar:
+  github.com                   TTL 60     A      140.82.121.3

@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10.2" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Alexander Mangaard" />
+  <title>Netværks-lag</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #0b0e1a;
+        color: #4a4a7a;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #4a4a7a;  padding-left: 4px; }
+    div.sourceCode
+      { color: #e6e6f5; background-color: #0b0e1a; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #e6e6f5; } /* Normal */
+    code span.al { color: #ff2fb0; background-color: #2a0a3d; font-weight: bold; } /* Alert */
+    code span.an { color: #8888c0; font-style: italic; } /* Annotation */
+    code span.at { color: #00e5ff; } /* Attribute */
+    code span.bn { color: #ff9f1c; } /* BaseN */
+    code span.bu { color: #7fdbff; } /* BuiltIn */
+    code span.cf { color: #ff2fb0; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #f9f871; } /* Char */
+    code span.cn { color: #00e5ff; font-weight: bold; } /* Constant */
+    code span.co { color: #8888c0; font-style: italic; } /* Comment */
+    code span.cv { color: #8888c0; font-style: italic; } /* CommentVar */
+    code span.do { color: #8888c0; font-style: italic; } /* Documentation */
+    code span.dt { color: #00e5ff; } /* DataType */
+    code span.dv { color: #ff9f1c; } /* DecVal */
+    code span.er { color: #ff3860; font-weight: bold; text-decoration: underline; } /* Error */
+    code span.ex { color: #00e5ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #ff9f1c; } /* Float */
+    code span.fu { color: #39ff88; } /* Function */
+    code span.im { color: #39ff88; } /* Import */
+    code span.in { color: #00e5ff; } /* Information */
+    code span.kw { color: #ff2fb0; font-weight: bold; } /* Keyword */
+    code span.op { color: #ff8ad8; } /* Operator */
+    code span.ot { color: #39ff88; } /* Other */
+    code span.pp { color: #39ff88; } /* Preprocessor */
+    code span.re { color: #00e5ff; background-color: #122a3a; } /* RegionMarker */
+    code span.sc { color: #f9f871; } /* SpecialChar */
+    code span.ss { color: #ffe066; } /* SpecialString */
+    code span.st { color: #f9f871; } /* String */
+    code span.va { color: #7fdbff; } /* Variable */
+    code span.vs { color: #ffe066; } /* VerbatimString */
+    code span.wa { color: #ff3860; font-weight: bold; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Netværks-lag</h1>
+<p class="subtitle">Byg og forstå din egen netværks-stack fra
+bunden:<br />
+DNS, TCP, HTTP og HTTPS i en IT-sikkerhedskontekst</p>
+<p class="author">Alexander Mangaard</p>
+<p class="date">28. september 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#overordnet-tilgang-og-metodevalg"
+id="toc-overordnet-tilgang-og-metodevalg">Overordnet tilgang og
+metodevalg</a>
+<ul>
+<li><a href="#miljø-cachyos-direkte-i-stedet-for-en-linux-vm"
+id="toc-miljø-cachyos-direkte-i-stedet-for-en-linux-vm">Miljø: CachyOS
+direkte i stedet for en Linux-VM</a></li>
+<li><a href="#repo-struktur"
+id="toc-repo-struktur">Repo-struktur</a></li>
+</ul></li>
+<li><a href="#modul-1-tcp-transportlaget"
+id="toc-modul-1-tcp-transportlaget">Modul 1: TCP, transportlaget</a>
+<ul>
+<li><a href="#formål" id="toc-formål">Formål</a></li>
+<li><a href="#sikkerhedsmæssig-relevans"
+id="toc-sikkerhedsmæssig-relevans">Sikkerhedsmæssig relevans</a></li>
+<li><a href="#design" id="toc-design">Design</a></li>
+<li><a href="#forklaring-af-felterne-i-en-tcp-pakke"
+id="toc-forklaring-af-felterne-i-en-tcp-pakke">Forklaring af felterne i
+en TCP-pakke</a></li>
+<li><a href="#bevis" id="toc-bevis">Bevis</a></li>
+<li><a href="#tcp-vs.-udp-opgave-3" id="toc-tcp-vs.-udp-opgave-3">TCP
+vs. UDP (opgave 3)</a></li>
+<li><a href="#delkonklusion"
+id="toc-delkonklusion">Delkonklusion</a></li>
+</ul></li>
+<li><a href="#modul-2-dns-fra-navn-til-adresse"
+id="toc-modul-2-dns-fra-navn-til-adresse">Modul 2: DNS, fra navn til
+adresse</a>
+<ul>
+<li><a href="#formål-1" id="toc-formål-1">Formål</a></li>
+<li><a href="#sikkerhedsmæssig-relevans-1"
+id="toc-sikkerhedsmæssig-relevans-1">Sikkerhedsmæssig relevans</a></li>
+<li><a href="#design-1" id="toc-design-1">Design</a></li>
+<li><a href="#hvordan-en-dns-pakke-er-bygget"
+id="toc-hvordan-en-dns-pakke-er-bygget">Hvordan en DNS-pakke er
+bygget</a></li>
+<li><a href="#bevis-1" id="toc-bevis-1">Bevis</a></li>
+<li><a href="#sikkerhedsvinkel-1"
+id="toc-sikkerhedsvinkel-1">Sikkerhedsvinkel</a></li>
+<li><a href="#delkonklusion-1"
+id="toc-delkonklusion-1">Delkonklusion</a></li>
+<li><a href="#oprydning" id="toc-oprydning">Oprydning</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="overordnet-tilgang-og-metodevalg">Overordnet tilgang og
+metodevalg</h1>
+<h2 id="miljø-cachyos-direkte-i-stedet-for-en-linux-vm">Miljø: CachyOS
+direkte i stedet for en Linux-VM</h2>
+<p>Opgavebeskrivelsen forudsætter en Linux-VM fra Linux Basics-forløbet.
+Jeg arbejder i stedet direkte på min CachyOS-maskine, som allerede er et
+Linux-system. Al trafik i opgaven forbliver på loopback-interfacet
+(<code>127.0.0.1</code>), så en VM ville ikke give andre protokoller
+eller andre capture-resultater.</p>
+<p><em>(Afsnittet udbygges med konkrete afvigelser fra opgaven,
+efterhånden som de opstår.)</em></p>
+<h2 id="repo-struktur">Repo-struktur</h2>
+<pre><code>Netværkslag/
+├── report/                (denne rapport: kildefiler + byggescript)
+├── modul1-tcp/            (kildekode)
+├── modul2-dns/
+├── modul3-http/
+├── modul4-tls/
+└── modul5-integration/</code></pre>
+<h1 id="modul-1-tcp-transportlaget">Modul 1: TCP, transportlaget</h1>
+<h2 id="formål">Formål</h2>
+<p>At forstå, hvordan pålidelig, forbindelsesorienteret kommunikation
+fungerer under HTTP, ved selv at bygge en simpel TCP-klient og -server
+og observere forbindelsen i Wireshark.</p>
+<h2 id="sikkerhedsmæssig-relevans">Sikkerhedsmæssig relevans</h2>
+<ul>
+<li>Firewalls og IDS/IPS-systemer træffer beslutninger på baggrund af
+TCP’s forbindelsestilstand. At forstå handshake og state er en
+forudsætning for at kunne læse deres logs.</li>
+<li>Angreb som SYN-flood udnytter forbindelsesopbygningen direkte
+(serveren skal holde tilstand for halvåbne forbindelser), og kan kun
+genkendes, hvis man ved, hvordan en normal handshake ser ud.</li>
+<li>Værktøjer som <code>netstat</code> og <code>ss</code> giver kun
+mening, hvis man forstår de underliggende forbindelsestilstande
+(<code>LISTEN</code>, <code>ESTAB</code>, <code>TIME-WAIT</code>).</li>
+<li>At binde en tjeneste til loopback frem for “alle interfaces” er en
+grundlæggende sikkerhedsvane: mindst mulig eksponering er billigere at
+forsvare end at rydde op efter en tjeneste, der var tilgængelig for
+flere end tiltænkt.</li>
+</ul>
+<h2 id="design">Design</h2>
+<p>Serveren og klienten er skrevet med Pythons indbyggede
+<code>socket</code>-modul, uden højniveaubiblioteker. Koden ligger i <a
+href="https://github.com/LOLCATATONIA/network-layers/tree/main/modul1-tcp"><code>modul1-tcp/</code></a>.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Valg</th>
+<th>Begrundelse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HOST = "127.0.0.1"</code></td>
+<td>Serveren lytter kun på loopback. <code>0.0.0.0</code> ville betyde
+“alle netværksinterfaces” og eksponere tjenesten for andre
+maskiner.</td>
+</tr>
+<tr>
+<td><code>PORT = 9000</code></td>
+<td>8080 er reserveret til HTTP-serveren i modul 3.</td>
+</tr>
+<tr>
+<td><code>SO_REUSEADDR</code></td>
+<td>Uden den fejler en hurtig genstart af serveren med “Address already
+in use”, mens den gamle forbindelse står i <code>TIME_WAIT</code>.</td>
+</tr>
+<tr>
+<td><code>if not data: break</code></td>
+<td><code>recv()</code> returnerer tom bytes (<code>b''</code>), når
+klienten har lukket sin side af forbindelsen (sendt FIN). Det er
+serverens signal til at lukke.</td>
+</tr>
+<tr>
+<td><code>with</code>-blokke</td>
+<td>Sockets lukkes altid, også hvis noget fejler undervejs.</td>
+</tr>
+<tr>
+<td><code>encode()</code> / <code>decode()</code></td>
+<td>Sockets sender og modtager bytes, ikke tekststrenge.</td>
+</tr>
+</tbody>
+</table>
+<p>Serveren kalder <code>socket()</code>, <code>bind()</code>,
+<code>listen()</code> og derefter <code>accept()</code> i en løkke.
+<code>accept()</code> blokerer, indtil en klient forbinder, og
+returnerer et nyt socket til netop den forbindelse. Klienten kalder
+<code>socket()</code> og <code>connect()</code>. Det er
+<code>connect()</code>, der udløser TCP’s three-way handshake.</p>
+<h2 id="forklaring-af-felterne-i-en-tcp-pakke">Forklaring af felterne i
+en TCP-pakke</h2>
+<p>Wireshark og <code>tshark</code> viser hver pakke på en linje med en
+række felter og indstillinger. Nedenfor en kort forklaring af dem, der
+optræder i captures i dette modul.</p>
+<h3 id="flag">Flag</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SYN</code></td>
+<td><em>Synchronize</em>: starter en forbindelse og synkroniserer
+sekvensnumre.</td>
+</tr>
+<tr>
+<td><code>ACK</code></td>
+<td><em>Acknowledge</em>: bekræfter modtagelse. Sat på næsten alle
+pakker efter den første.</td>
+</tr>
+<tr>
+<td><code>PSH</code></td>
+<td><em>Push</em>: afsenderen beder modtageren aflevere dataene til
+programmet med det samme, uden at vente på mere.</td>
+</tr>
+<tr>
+<td><code>FIN</code></td>
+<td><em>Finish</em>: afsenderen har ikke mere at sende og lukker sin
+side af forbindelsen.</td>
+</tr>
+<tr>
+<td><code>RST</code></td>
+<td><em>Reset</em>: afbryder forbindelsen brat, fx hvis en pakke rammer
+en lukket port.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="numre-og-størrelser">Numre og størrelser</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Felt</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Seq</code></td>
+<td>Sekvensnummer: nummeret på pakkens første byte i afsenderens
+datastrøm. Wireshark viser som standard <em>relative</em> numre, så de
+starter ved 0. SYN og FIN tæller hver som ét nummer.</td>
+</tr>
+<tr>
+<td><code>Ack</code></td>
+<td>Bekræftelsesnummer: det næste sekvensnummer, modtageren forventer.
+<code>Ack=20</code> betyder “jeg har modtaget alt til og med byte
+19”.</td>
+</tr>
+<tr>
+<td><code>Len</code></td>
+<td>Antal bytes data i pakken (uden TCP-headeren). <code>Len=0</code> er
+en ren kontrolpakke.</td>
+</tr>
+<tr>
+<td><code>Win</code></td>
+<td><em>Window</em>: hvor mange bytes modtageren aktuelt har plads til
+at modtage, før afsenderen skal vente på en bekræftelse. Styrer
+hastigheden (flowkontrol).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="indstillinger-options-aftalt-i-syn-pakkerne">Indstillinger
+(options) aftalt i SYN-pakkerne</h3>
+<p>Disse indstillinger sendes kun i de to første pakker i handshaken
+(SYN og SYN, ACK), hvor de to parter aftaler, hvad de begge
+understøtter.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Indstilling</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MSS</code></td>
+<td><em>Maximum Segment Size</em>: den største mængde data (payload) i
+én pakke, som afsenderen af indstillingen vil modtage. Afledt af
+interfacets MTU minus IP- og TCP-header. På loopback er MTU’en 65536, så
+MSS er ca. 65495. På almindeligt Ethernet (MTU 1500) er den typisk
+1460.</td>
+</tr>
+<tr>
+<td><code>WS</code></td>
+<td><em>Window Scale</em>: <code>Win</code>-feltet er kun 16 bit og kan
+dermed højst angive 65535 bytes. <code>WS</code> er en multiplikator
+(her 1024, altså 2¹⁰), som parterne bruger til at skalere
+<code>Win</code> op, så vinduet kan blive langt større. Aftales kun i
+SYN-pakkerne.</td>
+</tr>
+<tr>
+<td><code>SACK_PERM</code></td>
+<td><em>Selective Acknowledgment permitted</em>: parten kan modtage og
+sende selektive bekræftelser. Uden SACK kan modtageren kun sige “jeg har
+alt til byte X”; med SACK kan den også sige “jeg mangler kun bytes X-Y,
+men har resten”, så afsenderen ikke gensender data, der allerede er
+kommet frem.</td>
+</tr>
+<tr>
+<td><code>TSval</code></td>
+<td><em>Timestamp value</em>: afsenderens tidsstempel (et tal fra et
+internt ur) på pakken.</td>
+</tr>
+<tr>
+<td><code>TSecr</code></td>
+<td><em>Timestamp echo reply</em>: ekko af det seneste
+<code>TSval</code>, afsenderen har modtaget fra modparten. I den
+allerførste SYN-pakke er det 0, fordi der endnu intet er at ekkoe.
+Forskellen mellem tid og ekko bruges til at måle rundturstiden (RTT), og
+tidsstemplerne beskytter mod gamle, forsinkede pakker, der ellers kunne
+forveksles med nye.</td>
+</tr>
+</tbody>
+</table>
+<p>En lille observation fra en capture, hvor handshaken ikke blev
+fanget: Wireshark viste da <code>Win=64</code> i stedet for
+<code>Win=65536</code>. Årsagen er, at vinduesskaleringen
+(<code>WS=1024</code>) kun aftales i SYN-pakkerne. Uden dem kender
+Wireshark ikke faktoren, og viser den uskalerede værdi (64 × 1024 =
+65536).</p>
+<h3 id="sikkerhedsvinkel">Sikkerhedsvinkel</h3>
+<p>Kombinationen af indstillinger i SYN-pakken (MSS, WS, SACK_PERM,
+tidsstempler og deres rækkefølge) varierer mellem operativsystemer.
+Værktøjer til <em>OS fingerprinting</em> (fx <code>nmap</code> og
+<code>p0f</code>) bruger det til at gætte, hvilket system der sidder i
+den anden ende. Tidsstemplerne kan desuden afsløre, hvor længe en
+maskine har været tændt, da uret typisk tæller fra opstart.</p>
+<h2 id="bevis">Bevis</h2>
+<p>Forløbet er fanget to gange på loopback-interfacet <code>lo</code>, i
+to separate kørsler af serveren og klienten (derfor har klienten
+forskellige portnumre i de to kørsler): en kørsel med normal lukning og
+en kørsel, hvor der opstår en <code>RST</code>. Begge captures er
+optaget med et <strong>capture-filter</strong>, så filerne kun
+indeholder trafik på port 9000:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-i</span> lo <span class="at">-f</span> <span class="st">&quot;tcp port 9000&quot;</span> <span class="at">-w</span> report/evidens/modul1/tcp-normal.pcapng <span class="at">-P</span></span></code></pre></div>
+<p>Capturefilerne og tekstoutputtet ligger i <a
+href="https://github.com/LOLCATATONIA/network-layers/tree/main/report/evidens/modul1"><code>report/evidens/modul1/</code></a>.</p>
+<h3 id="server-og-klient-opgave-1">Server og klient (opgave 1)</h3>
+<p>Serveren lytter på <code>127.0.0.1:9000</code>, accepterer klienten
+og ekkoer beskeden tilbage. Klienten er afsluttet med Ctrl+C, som koden
+fanger og håndterer ved at lukke forbindelsen ordentligt. Det sender en
+normal <code>FIN</code> og er altså ikke et nedbrud.</p>
+<figure>
+<img src="report/screenshots/modul1/01-server.png"
+alt="Serveren modtager beskeden fra klienten (127.0.0.1:57422)" />
+<figcaption aria-hidden="true">Serveren modtager beskeden fra klienten
+(127.0.0.1:57422)</figcaption>
+</figure>
+<figure>
+<img src="report/screenshots/modul1/01-klient.png"
+alt="Klienten sender “hej fra klienten” og får den samme tekst tilbage" />
+<figcaption aria-hidden="true">Klienten sender “hej fra klienten” og får
+den samme tekst tilbage</figcaption>
+</figure>
+<h3 id="handshake-opgave-2">Handshake (opgave 2)</h3>
+<p>De første tre pakker i capturen er TCP’s three-way handshake:</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Retning</th>
+<th>Flag</th>
+<th>Seq / Ack</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>klient → server (<code>57422 → 9000</code>)</td>
+<td><code>SYN</code></td>
+<td><code>Seq=0</code></td>
+<td>Klienten beder om en forbindelse og foreslår sine indstillinger
+(MSS, WS, SACK_PERM, tidsstempler).</td>
+</tr>
+<tr>
+<td>2</td>
+<td>server → klient (<code>9000 → 57422</code>)</td>
+<td><code>SYN, ACK</code></td>
+<td><code>Seq=0 Ack=1</code></td>
+<td>Serveren accepterer, bekræfter klientens SYN (<code>Ack=1</code>) og
+sender sine egne indstillinger.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>klient → server</td>
+<td><code>ACK</code></td>
+<td><code>Seq=1 Ack=1</code></td>
+<td>Klienten bekræfter serverens SYN. Forbindelsen er etableret.</td>
+</tr>
+</tbody>
+</table>
+<p>Vinduesstørrelsen (<code>Win</code>) er <code>65495</code> i
+SYN-pakken og <code>65536</code> i den afsluttende ACK. Forskellen
+skyldes, at <code>WS=1024</code> først træder i kraft, efter
+SYN-pakkerne er udvekslet (se afsnittet om indstillinger ovenfor).</p>
+<figure>
+<img src="report/screenshots/modul1/02-tshark-normal.png"
+alt="tshark: hele forløbet med normal lukning, 11 pakker" />
+<figcaption aria-hidden="true">tshark: hele forløbet med normal lukning,
+11 pakker</figcaption>
+</figure>
+<figure>
+<img src="report/screenshots/modul1/05-wireshark-handshake.png"
+alt="Wireshark: handshaken (pakke 1-3) markeret" />
+<figcaption aria-hidden="true">Wireshark: handshaken (pakke 1-3)
+markeret</figcaption>
+</figure>
+<h3 id="dataudveksling">Dataudveksling</h3>
+<p>Pakke 4-7 er selve echo-udvekslingen. Beskeden
+<code>hej fra klienten</code> er 16 bytes:</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Retning</th>
+<th>Flag</th>
+<th>Len</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>klient → server</td>
+<td><code>PSH, ACK</code></td>
+<td>16</td>
+<td>Klienten sender beskeden.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>server → klient</td>
+<td><code>ACK</code></td>
+<td>0</td>
+<td>Serveren bekræfter modtagelsen (<code>Ack=17</code>, altså 16 bytes
+efter <code>Seq=1</code>).</td>
+</tr>
+<tr>
+<td>6</td>
+<td>server → klient</td>
+<td><code>PSH, ACK</code></td>
+<td>16</td>
+<td>Serveren sender ekkoet.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>klient → server</td>
+<td><code>ACK</code></td>
+<td>0</td>
+<td>Klienten bekræfter ekkoet.</td>
+</tr>
+</tbody>
+</table>
+<p>Pausen på cirka otte sekunder mellem pakke 3 og 4 er den tid, det tog
+at skrive beskeden. TCP bekræfter hver modtaget datamængde med et
+<code>ACK</code>, og det er denne bekræftelse, der gør TCP
+pålideligt.</p>
+<h3 id="afslutning-med-fin-opgave-2">Afslutning med <code>FIN</code>
+(opgave 2)</h3>
+<p>I denne kørsel blev <strong>serveren lukket først</strong> (Ctrl+C,
+mens klienten stadig var åben). Derfor sender serveren den første
+<code>FIN</code>:</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Retning</th>
+<th>Flag</th>
+<th>Seq / Ack</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td>server → klient</td>
+<td><code>FIN, ACK</code></td>
+<td><code>Seq=17 Ack=17</code></td>
+<td>Serveren har ikke mere at sende og lukker sin side.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>klient → server</td>
+<td><code>ACK</code></td>
+<td><code>Seq=17 Ack=18</code></td>
+<td>Klienten bekræfter. <code>Ack=18</code>, fordi en <code>FIN</code>
+tæller som ét sekvensnummer.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>klient → server</td>
+<td><code>FIN, ACK</code></td>
+<td><code>Seq=17 Ack=18</code></td>
+<td>Cirka 19 sekunder senere lukker klienten (Ctrl+C) sin side.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>server → klient</td>
+<td><code>ACK</code></td>
+<td><code>Seq=18 Ack=18</code></td>
+<td>Serveren bekræfter. Forbindelsen er helt lukket.</td>
+</tr>
+</tbody>
+</table>
+<p>Afslutningen er altså fire pakker (<code>FIN</code>,
+<code>ACK</code>, <code>FIN</code>, <code>ACK</code>), fordi hver
+retning lukkes for sig. Mellem pakke 9 og 10 er forbindelsen
+<strong>halvt lukket</strong>: serveren er færdig med at sende, men
+klienten kan i princippet stadig sende. Bekræftelsen i pakke 9 kommer
+cirka 40 ms efter FIN’en, hvilket ligner Linux’ forsinkede bekræftelser
+(<em>delayed ACK</em>), hvor modtageren venter kort for at se, om den
+selv har noget at sende med.</p>
+<figure>
+<img src="report/screenshots/modul1/06-wireshark-fin.png"
+alt="Wireshark: afslutningen (pakke 8-11, FIN og ACK) markeret" />
+<figcaption aria-hidden="true">Wireshark: afslutningen (pakke 8-11, FIN
+og ACK) markeret</figcaption>
+</figure>
+<h3 id="afslutning-med-rst">Afslutning med <code>RST</code></h3>
+<p>I den anden kørsel blev serveren igen lukket først, men denne gang
+skrev jeg en ny besked i den stadig åbne klient
+(<code>er du der?</code>):</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Retning</th>
+<th>Flag</th>
+<th>Len</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td>server → klient</td>
+<td><code>FIN, ACK</code></td>
+<td>0</td>
+<td>Serveren lukker sin side.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>klient → server</td>
+<td><code>ACK</code></td>
+<td>0</td>
+<td>Klienten bekræfter.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>klient → server</td>
+<td><code>PSH, ACK</code></td>
+<td>10</td>
+<td>Klienten sender data ind i en forbindelse, serveren har lukket.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>server → klient</td>
+<td><strong><code>RST</code></strong></td>
+<td>0</td>
+<td>Serveren afviser og afbryder forbindelsen.
+<code>Seq=18 Win=0</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Forskellen på de to måder at slutte på er, at <code>FIN</code> er en
+<em>høflig</em> lukning, hvor begge sider aftaler det, mens
+<code>RST</code> er en <em>brat afbrydelse</em>. Her opstår den, fordi
+serveren har kaldt <code>close()</code> og ikke længere kan aflevere
+data til noget program. Data, der ankommer efter <code>close()</code>,
+besvares derfor med <code>RST</code>. Pakken har intet
+<code>ACK</code>-flag, og dens <code>Seq=18</code> svarer til det
+<code>Ack</code>-nummer, klienten sidst sendte. Klienten viser en tom
+<code>svar:</code>, fordi <code>recv()</code> returnerer tom bytes, når
+den anden side har lukket (den modtog serverens <code>FIN</code> i pakke
+8), og ikke en fejl.</p>
+<figure>
+<img src="report/screenshots/modul1/04-tshark-rst.png"
+alt="tshark: forløbet med RST (pakke 11)" />
+<figcaption aria-hidden="true">tshark: forløbet med RST (pakke
+11)</figcaption>
+</figure>
+<figure>
+<img src="report/screenshots/modul1/04-klient-rst.png"
+alt="Klienten viser en tom “svar:” efter at have skrevet til en lukket forbindelse" />
+<figcaption aria-hidden="true">Klienten viser en tom “svar:” efter at
+have skrevet til en lukket forbindelse</figcaption>
+</figure>
+<figure>
+<img src="report/screenshots/modul1/07-wireshark-rst.png"
+alt="Wireshark: RST-pakken markeret" />
+<figcaption aria-hidden="true">Wireshark: RST-pakken
+markeret</figcaption>
+</figure>
+<h3 id="forbindelsestilstande-med-ss-opgave-4">Forbindelsestilstande med
+<code>ss</code> (opgave 4)</h3>
+<p>Kommandoerne er kørt i en tredje terminal under den normale kørsel
+(samme forbindelse som i capturen ovenfor, klientport
+<code>57422</code>), og outputtet er gemt med <code>tee</code>.</p>
+<p><code>ss</code> (<em>socket statistics</em>) viser maskinens sockets.
+Flagene bestemmer, hvilke der vises, og hvordan:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-t</code></td>
+<td>Kun TCP-sockets.</td>
+</tr>
+<tr>
+<td><code>-n</code></td>
+<td>Numerisk visning: portnumre og adresser vises som tal
+(<code>9000</code>) i stedet for at blive slået op som navne. Det er
+hurtigere og viser præcis det, der står i pakkerne.</td>
+</tr>
+<tr>
+<td><code>-p</code></td>
+<td>Viser, hvilken proces (navn, pid og fildeskriptor) der ejer
+socket’en. Kræver, at man ejer processen eller er root.</td>
+</tr>
+<tr>
+<td><code>-l</code></td>
+<td>Kun <strong>lyttende</strong> sockets (<em>listening</em>), altså
+servere, der venter på forbindelser.</td>
+</tr>
+<tr>
+<td><code>-a</code></td>
+<td><strong>Alle</strong> sockets, både lyttende og forbundne, uanset
+tilstand.</td>
+</tr>
+</tbody>
+</table>
+<p>Uden <code>-l</code> og <code>-a</code> viser <code>ss</code> kun
+forbundne sockets. Derfor bruges tre kombinationer:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Kommando</th>
+<th>Viser</th>
+<th>Bruges til</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ss -tnp</code></td>
+<td>Forbundne TCP-sockets, numerisk, med proces.</td>
+<td>At se de to ender af en aktiv forbindelse (<code>ESTAB</code>) og
+hvilke processer der ejer dem.</td>
+</tr>
+<tr>
+<td><code>ss -tlnp</code></td>
+<td>Kun lyttende TCP-sockets, numerisk, med proces.</td>
+<td>At se, hvilken adresse og port serveren lytter på
+(<code>LISTEN</code>).</td>
+</tr>
+<tr>
+<td><code>ss -tan</code></td>
+<td>Alle TCP-sockets, numerisk, uden proces.</td>
+<td>At følge en forbindelses tilstande under lukningen
+(<code>FIN-WAIT-2</code>, <code>CLOSE-WAIT</code>,
+<code>TIME-WAIT</code>). Processen vises ikke, fordi en lukket
+forbindelse ofte ikke længere har en ejer.</td>
+</tr>
+</tbody>
+</table>
+<p><code>| grep 9000</code> filtrerer outputtet, så kun linjer med port
+9000 vises, og <code>| tee fil</code> viser outputtet og gemmer det
+samtidig i en fil.</p>
+<p><strong>1. Forbindelsen er åben</strong> (efter pakke 7):</p>
+<pre><code>$ ss -tnp | grep 9000
+ESTAB 0 0 127.0.0.1:57422 127.0.0.1:9000  users:((&quot;python&quot;,pid=11849,fd=3))
+ESTAB 0 0 127.0.0.1:9000  127.0.0.1:57422 users:((&quot;python&quot;,pid=11842,fd=4))</code></pre>
+<p>Der er to linjer, en for hver ende af den samme forbindelse:
+klientens (<code>57422 → 9000</code>) og serverens
+(<code>9000 → 57422</code>). <code>-p</code> viser, at de tilhører to
+forskellige processer.</p>
+<p><strong>2. Serverens lyttende socket:</strong></p>
+<pre><code>$ ss -tlnp | grep 9000
+LISTEN 0 128 127.0.0.1:9000 0.0.0.0:* users:((&quot;python&quot;,pid=11842,fd=3))</code></pre>
+<p>Lytteadressen er <code>127.0.0.1</code> og ikke <code>0.0.0.0</code>.
+Det er beviset for, at serveren kun er tilgængelig fra maskinen
+selv.</p>
+<p><strong>3. Serveren er lukket, klienten er stadig åben</strong>
+(efter pakke 9):</p>
+<pre><code>$ ss -tan | grep 9000
+CLOSE-WAIT 1 0 127.0.0.1:57422 127.0.0.1:9000
+FIN-WAIT-2 0 0 127.0.0.1:9000  127.0.0.1:57422</code></pre>
+<p><strong>4. Begge sider er lukket</strong> (efter pakke 11):</p>
+<pre><code>$ ss -tan | grep 9000
+TIME-WAIT 0 0 127.0.0.1:9000 127.0.0.1:57422</code></pre>
+<figure>
+<img src="report/screenshots/modul1/03-ss.png"
+alt="Alle fire ss-kommandoer i terminalen" />
+<figcaption aria-hidden="true">Alle fire ss-kommandoer i
+terminalen</figcaption>
+</figure>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tilstand</th>
+<th>Betydning</th>
+<th>Set efter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LISTEN</code></td>
+<td>Serveren venter på forbindelser.</td>
+<td>Serveren er startet</td>
+</tr>
+<tr>
+<td><code>ESTAB</code></td>
+<td>Forbindelsen er etableret, data kan sendes.</td>
+<td>Pakke 3 (handshake færdig)</td>
+</tr>
+<tr>
+<td><code>FIN-WAIT-2</code></td>
+<td>Serveren har sendt <code>FIN</code> og fået den bekræftet. Den
+venter på, at klienten også lukker.</td>
+<td>Pakke 9</td>
+</tr>
+<tr>
+<td><code>CLOSE-WAIT</code></td>
+<td>Klienten har modtaget serverens <code>FIN</code>, men har endnu ikke
+selv lukket. <code>Recv-Q 1</code> skyldes formentlig den modtagne
+<code>FIN</code>, som klienten endnu ikke har læst.</td>
+<td>Pakke 9</td>
+</tr>
+<tr>
+<td><code>TIME-WAIT</code></td>
+<td>Den side, der lukkede <em>først</em> (her serveren), holder
+forbindelsen i live i et stykke tid efter afslutningen (på Linux 60
+sekunder), så sene pakker fra den gamle forbindelse ikke forveksles med
+en ny.</td>
+<td>Pakke 11</td>
+</tr>
+</tbody>
+</table>
+<p>Bemærk, at <code>TIME-WAIT</code> opstår hos den, der lukker først.
+Her var det serveren, og det er samme mekanisme, der gør
+<code>SO_REUSEADDR</code> nødvendig i <code>server.py</code>.</p>
+<h2 id="tcp-vs.-udp-opgave-3">TCP vs. UDP (opgave 3)</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Egenskab</th>
+<th>TCP</th>
+<th>UDP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Forbindelse</td>
+<td>Forbindelsesorienteret: handshake før data (pakke 1-3 ovenfor).</td>
+<td>Forbindelsesløs: pakker sendes uden forudgående opsætning.</td>
+</tr>
+<tr>
+<td>Pålidelighed</td>
+<td>Alt bekræftes med <code>ACK</code>. Tabte pakker gensendes.</td>
+<td>Ingen garantier: pakker kan gå tabt eller komme dobbelt.</td>
+</tr>
+<tr>
+<td>Rækkefølge</td>
+<td>Data leveres i den rækkefølge, de blev sendt.</td>
+<td>Ingen garanti for rækkefølgen.</td>
+</tr>
+<tr>
+<td>Overhead</td>
+<td>Højere (handshake, bekræftelser, tilstand hos begge parter).</td>
+<td>Lav.</td>
+</tr>
+<tr>
+<td>Typiske brugsområder</td>
+<td>Web, e-mail, SSH, filoverførsel.</td>
+<td>DNS-opslag, streaming, spil, VoIP.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Hvorfor er HTTP bygget oven på TCP?</strong> En webside, der
+kommer halvt eller i forkert rækkefølge, er ubrugelig. HTTP har brug
+for, at alle bytes ankommer, hele og i orden, og det sørger TCP for
+(bekræftelser, gensendelse og rækkefølge). Med UDP skulle hvert program
+selv genopfinde det.</p>
+<p>Modeksemplet er DNS (modul 2): et opslag er en lille forespørgsel og
+et lille svar, så en handshake ville koste mere end selve opslaget. Går
+svaret tabt, spørger klienten bare igen. Derfor bruger DNS som
+udgangspunkt UDP.</p>
+<h2 id="delkonklusion">Delkonklusion</h2>
+<p>Modulet viser, at TCP’s forbindelsesopbygning og -afslutning er
+synlig og målbar, og at forbindelsestilstandene i <code>ss</code> kan
+følges pakke for pakke i Wireshark: <code>ESTAB</code> efter handshaken,
+<code>FIN-WAIT-2</code>/<code>CLOSE-WAIT</code> efter den første
+<code>FIN</code>, og <code>TIME-WAIT</code> hos den, der lukkede først.
+Det overraskede mig, at en almindelig lukning tager fire pakker, og at
+forbindelsen kan være halvt lukket i et stykke tid. Det er også
+tydeligt, at en <code>RST</code> opstår helt naturligt, når en klient
+skriver til en forbindelse, den anden side allerede har lukket, og at en
+<code>RST</code> derfor ikke i sig selv er tegn på et angreb.</p>
+<p>Med hensyn til sikkerhed peger modulet på to ting. For det første er
+<code>TIME-WAIT</code> hos serveren en konsekvens af, at serveren lukker
+først. En tjeneste, der lukker mange forbindelser, kommer til at holde
+mange sockets i den tilstand. For det andet afhænger både firewalls og
+angreb som SYN-flood af den handshake og de tilstande, der her er
+observeret. At serveren bindes til <code>127.0.0.1</code> og ikke
+<code>0.0.0.0</code> er en billig måde at reducere eksponeringen på fra
+start.</p>
+<p>En forbedring, jeg ikke har lavet, er at få <code>client.py</code>
+til at skrive “serveren har lukket forbindelsen”, når
+<code>recv()</code> returnerer tom bytes. Nu ser en lukket forbindelse
+ud som en tom <code>svar:</code>, hvilket er let at misforstå.</p>
+<h1 id="modul-2-dns-fra-navn-til-adresse">Modul 2: DNS, fra navn til
+adresse</h1>
+<h2 id="formål-1">Formål</h2>
+<p>At forstå og selv kunne udføre navneopløsning ved at bygge en
+DNS-forespørgsel som rå bytes, sende den over UDP og læse svaret.
+Desuden at konfigurere lokal navneopløsning til et selvvalgt
+domænenavn.</p>
+<h2 id="sikkerhedsmæssig-relevans-1">Sikkerhedsmæssig relevans</h2>
+<ul>
+<li>DNS er ofte usikret og et hyppigt mål for spoofing og cache
+poisoning, fordi mange systemer stoler blindt på svaret uden yderligere
+verifikation.</li>
+<li>DNS bruges aktivt af angribere til data-eksfiltrering og
+command-and-control-kommunikation (DNS tunneling), netop fordi
+DNS-trafik sjældent inspiceres nøje.</li>
+<li>DNS er det første skridt i næsten enhver netværksforbindelse. En
+forkert eller kompromitteret DNS-opsætning kan omdirigere brugere til
+ondsindede systemer, uden at de mærker noget.</li>
+</ul>
+<h2 id="design-1">Design</h2>
+<p>Scriptet <a
+href="https://github.com/LOLCATATONIA/network-layers/blob/main/modul2-dns/dns_lookup.py"><code>modul2-dns/dns_lookup.py</code></a>
+bygger selv forespørgslen og læser svaret med Pythons
+<code>socket</code>- og <code>struct</code>-moduler. Der bruges ingen
+DNS-biblioteker.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Valg</th>
+<th>Begrundelse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UDP (<code>SOCK_DGRAM</code>) på port 53</td>
+<td>DNS-opslag er små og består af én forespørgsel og ét svar, så en
+TCP-handshake ville koste mere end selve opslaget. Går et svar tabt,
+spørger klienten bare igen.</td>
+</tr>
+<tr>
+<td>Transaktions-ID valgt tilfældigt (2 byte)</td>
+<td>Bruges til at genkende vores eget svar.</td>
+</tr>
+<tr>
+<td>Kun flaget <code>RD</code> (<em>recursion desired</em>) sat</td>
+<td>Vi beder resolveren om selv at finde svaret.</td>
+</tr>
+<tr>
+<td><code>struct.pack("!HHHHHH", …)</code></td>
+<td><code>!</code> er netværks-byterækkefølge (big-endian),
+<code>H</code> er 2 byte.</td>
+</tr>
+<tr>
+<td>Svar accepteres kun fra den resolver, vi spurgte, med det ID, vi
+sendte</td>
+<td>UDP har ingen forbindelse, så hvem som helst kan sende en pakke til
+socket’en. Ellers kunne et forfalsket svar overtage.</td>
+</tr>
+<tr>
+<td>Pointer-komprimering understøttes, med en grænse for antal hop</td>
+<td>Se nedenfor. Grænsen forhindrer, at en ødelagt eller ondsindet pakke
+sender scriptet i en uendelig løkke.</td>
+</tr>
+<tr>
+<td>Længder og grænser kontrolleres ved parsing</td>
+<td>En afkortet eller misdannet pakke giver en fejlmeddelelse i stedet
+for et nedbrud.</td>
+</tr>
+<tr>
+<td>Automatisk skift til TCP ved <code>TC=1</code></td>
+<td>Se afsnittet om <code>TXT</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Scriptet understøtter recordtyperne <code>A</code>,
+<code>AAAA</code>, <code>NS</code>, <code>CNAME</code>, <code>MX</code>,
+<code>TXT</code> og <code>SOA</code>.</p>
+<h2 id="hvordan-en-dns-pakke-er-bygget">Hvordan en DNS-pakke er
+bygget</h2>
+<p>En DNS-pakke består af en <strong>header</strong> på 12 byte
+efterfulgt af <strong>sektioner</strong>. Forespørgslen er header og
+spørgsmål. Svaret gentager spørgsmålet og tilføjer svar-records.</p>
+<p><strong>Header (12 byte):</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Felt</th>
+<th>Størrelse</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Transaktions-ID</td>
+<td>2 byte</td>
+<td>Parrer svar med forespørgsel.</td>
+</tr>
+<tr>
+<td>Flags</td>
+<td>2 byte</td>
+<td><code>QR</code> (0 = forespørgsel, 1 = svar), <code>RD</code>,
+<code>RA</code>, <code>TC</code>, <code>AA</code> og <code>RCODE</code>
+(statuskode).</td>
+</tr>
+<tr>
+<td>Antal spørgsmål</td>
+<td>2 byte</td>
+<td>I vores forespørgsel: 1.</td>
+</tr>
+<tr>
+<td>Antal svar</td>
+<td>2 byte</td>
+<td>0 i en forespørgsel.</td>
+</tr>
+<tr>
+<td>Antal authority- og additional-records</td>
+<td>2 + 2 byte</td>
+<td>0 i en forespørgsel.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Spørgsmål:</strong> domænenavnet, en type (2 byte) og en
+klasse (2 byte, <code>IN</code> = 1).</p>
+<p>Domænenavnet er kodet som en række <em>labels</em>, hvor hver label
+har et længde-byte foran, og hele navnet afsluttes med en nul-byte.
+<code>github.com</code> bliver til
+<code>06 "github" 03 "com" 00</code>.</p>
+<p><strong>Pointer-komprimering:</strong> navne i svaret bruger ofte en
+<em>pointer</em> i stedet for at gentage hele navnet. Når de to øverste
+bit i et længde-byte er <code>11</code>, er de resterende 14 bit en
+position i pakken, hvor navnet allerede står. Så fylder
+<code>github.com</code> to bytes i stedet for tolv.</p>
+<h2 id="bevis-1">Bevis</h2>
+<p>De samlede tekstoutputs og capturen ligger i <a
+href="https://github.com/LOLCATATONIA/network-layers/tree/main/report/evidens/modul2"><code>report/evidens/modul2/</code></a>.</p>
+<h3 id="de-rå-bytes-i-et-opslag">De rå bytes i et opslag</h3>
+<p>Kørt med <code>-v</code>, som viser pakkerne som hexadecimale
+bytes:</p>
+<pre><code>$ python3 modul2-dns/dns_lookup.py github.com A -v
+Spørger 8.8.8.8:53 om github.com (A)
+Transaktions-ID: 0x072e
+Forespørgsel (28 bytes): 07 2e 01 00 00 01 00 00 00 00 00 00 06 67 69 74 68 75 62 03 63 6f 6d 00 00 01 00 01
+Svar (44 bytes): 07 2e 81 80 00 01 00 01 00 00 00 00 06 67 69 74 68 75 62 03 63 6f 6d 00 00 01 00 01 c0 0c 00 01 00 01 00 00 00 3c 00 04 8c 52 79 03
+Transport: UDP
+Flags: QR=1 AA=0 TC=0 RD=1 RA=1  RCODE=NOERROR
+Spørgsmål: 1  Svar: 1  Authority: 0  Additional: 0
+Svar:
+  github.com                   TTL 60     A      140.82.121.3</code></pre>
+<p><strong>Forespørgslen (28 byte):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Bytes</th>
+<th>Felt</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>07 2e</code></td>
+<td>Transaktions-ID</td>
+<td><code>0x072e</code></td>
+</tr>
+<tr>
+<td><code>01 00</code></td>
+<td>Flags</td>
+<td>Kun <code>RD</code> er sat</td>
+</tr>
+<tr>
+<td><code>00 01</code></td>
+<td>Spørgsmål</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>00 00</code> <code>00 00</code> <code>00 00</code></td>
+<td>Svar, authority, additional</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>06 67 69 74 68 75 62</code></td>
+<td>Label</td>
+<td>længde 6, derefter <code>github</code></td>
+</tr>
+<tr>
+<td><code>03 63 6f 6d</code></td>
+<td>Label</td>
+<td>længde 3, derefter <code>com</code></td>
+</tr>
+<tr>
+<td><code>00</code></td>
+<td>Nul-byte</td>
+<td>Navnet er slut</td>
+</tr>
+<tr>
+<td><code>00 01</code></td>
+<td>Type</td>
+<td><code>A</code></td>
+</tr>
+<tr>
+<td><code>00 01</code></td>
+<td>Klasse</td>
+<td><code>IN</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Svaret (44 byte).</strong> De første 28 byte er et ekko af
+forespørgslen, med to ændringer: flags er nu <code>81 80</code>
+(<code>QR=1</code>, <code>RD=1</code>, <code>RA=1</code>, ingen fejl) og
+antallet af svar er <code>00 01</code>. Derefter følger selve
+svar-recorden på 16 byte:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Bytes</th>
+<th>Felt</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>c0 0c</code></td>
+<td>Navn</td>
+<td><strong>Pointer</strong> til position 12, hvor
+<code>github.com</code> står i spørgsmålet</td>
+</tr>
+<tr>
+<td><code>00 01</code></td>
+<td>Type</td>
+<td><code>A</code></td>
+</tr>
+<tr>
+<td><code>00 01</code></td>
+<td>Klasse</td>
+<td><code>IN</code></td>
+</tr>
+<tr>
+<td><code>00 00 00 3c</code></td>
+<td>TTL</td>
+<td><code>0x3c</code> = 60 sekunder</td>
+</tr>
+<tr>
+<td><code>00 04</code></td>
+<td>Længde</td>
+<td>4 byte data</td>
+</tr>
+<tr>
+<td><code>8c 52 79 03</code></td>
+<td>Adresse</td>
+<td>140.82.121.3 (<code>0x8c</code> = 140, <code>0x52</code> = 82,
+<code>0x79</code> = 121, <code>0x03</code> = 3)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="recordtyper-opgave-3">Recordtyper (opgave 3)</h3>
+<p>Alle fem recordtyper er slået op for <code>github.com</code> mod
+resolveren <code>8.8.8.8</code>:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Type</th>
+<th>Opslag</th>
+<th>Svar</th>
+<th>Formål</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A</code></td>
+<td><code>github.com</code></td>
+<td><code>140.82.121.3</code> (TTL 60)</td>
+<td>Oversætter et navn til en IPv4-adresse. Det er den, en browser
+bruger til at finde serveren.</td>
+</tr>
+<tr>
+<td><code>CNAME</code></td>
+<td><code>www.github.com</code></td>
+<td><code>github.com</code> (TTL 3591)</td>
+<td>Et <strong>alias</strong>: <code>www</code> peger på et andet navn,
+og opslaget fortsætter dér.</td>
+</tr>
+<tr>
+<td><code>MX</code></td>
+<td><code>github.com</code></td>
+<td><code>0 github-com.mail.protection.outlook.com</code> (TTL 5)</td>
+<td>Peger på domænets <strong>mailserver</strong>. Tallet er præferencen
+(lavest først). Recorden peger på et navn, ikke en IP, så afsenderen
+slår også dette navn op.</td>
+</tr>
+<tr>
+<td><code>TXT</code></td>
+<td><code>github.com</code></td>
+<td>24 records, bl.a. SPF og verificeringstekster</td>
+<td>Frit tekstindhold. Bruges til bl.a. SPF (hvilke servere må sende
+mail for domænet) og til at bevise ejerskab over for tjenester.</td>
+</tr>
+<tr>
+<td><code>NS</code></td>
+<td><code>github.com</code></td>
+<td>8 nameservere (AWS Route 53 og NS1), TTL 2425</td>
+<td>Angiver, hvilke servere der er <strong>autoritative</strong> for
+domænet, altså har det endelige svar.</td>
+</tr>
+</tbody>
+</table>
+<p>Uddrag af output for de enkelte typer:</p>
+<pre><code>$ python3 modul2-dns/dns_lookup.py www.github.com CNAME
+  www.github.com               TTL 3591   CNAME  github.com
+
+$ python3 modul2-dns/dns_lookup.py github.com MX
+  github.com                   TTL 5      MX     0 github-com.mail.protection.outlook.com
+
+$ python3 modul2-dns/dns_lookup.py github.com NS
+  github.com                   TTL 2425   NS     ns-1283.awsdns-32.org
+  github.com                   TTL 2425   NS     dns3.p08.nsone.net
+  ... (8 nameservere i alt)</code></pre>
+<p>Et opslag på <code>www.github.com</code> med type <code>A</code>
+returnerer <strong>både</strong> aliaset og adressen i samme svar:</p>
+<pre><code>  www.github.com               TTL 3598   CNAME  github.com
+  github.com                   TTL 60     A      140.82.121.4</code></pre>
+<p><strong>Om TTL.</strong> <em>Time to live</em> er det antal sekunder,
+et svar må gemmes i cache. De viste værdier er derfor ikke faste. En
+resolver tæller ned, mens den har svaret gemt, så samme opslag giver
+forskellige TTL’er afhængigt af, hvornår man spørger (fx <code>MX</code>
+med TTL 258 ved ét opslag og 5 ved et senere). Forskellene mellem
+typerne er en pointe i sig selv: <code>A</code>-recorden har en kort TTL
+(60 s), så adressen hurtigt kan skiftes, mens <code>CNAME</code> og
+<code>NS</code>, som sjældent ændres, har en langt længere. Adressen for
+<code>github.com</code> varierer også (her <code>.3</code> og
+<code>.4</code>), fordi GitHub bruger flere adresser.</p>
+<h3
+id="txt-udp-svaret-er-for-stort-og-der-skiftes-til-tcp"><code>TXT</code>:
+UDP-svaret er for stort, og der skiftes til TCP</h3>
+<p><code>github.com</code> har så mange <code>TXT</code>-records, at
+svaret ikke kan være i ét UDP-svar. Resolveren sætter flaget
+<code>TC</code> (<em>truncated</em>) og sender ingen records med. Det
+viser scriptet, når TCP-skiftet slås fra:</p>
+<pre><code>$ python3 modul2-dns/dns_lookup.py github.com TXT --udp-only
+Flags: QR=1 AA=0 TC=1 RD=1 RA=1  RCODE=NOERROR
+Spørgsmål: 1  Svar: 0  Authority: 0  Additional: 0
+[!] Svaret er afkortet (TC=1), og TCP-fallback er slået fra (--udp-only).
+Ingen svar-records.</code></pre>
+<p>Uden <code>--udp-only</code> gentager scriptet forespørgslen over
+TCP, hvor der ikke er en størrelsesgrænse. Over TCP sættes en 2-byte
+længde foran pakken, fordi TCP er en byte-strøm uden beskedgrænser
+(samme pointe som i modul 1). Resultatet er 24 records:</p>
+<pre><code>$ python3 modul2-dns/dns_lookup.py github.com TXT
+[!] Svaret er afkortet (TC=1). Gentager forespørgslen over TCP.
+Transport: TCP
+Svar: 24
+  github.com   TTL 82   TXT   &quot;google-site-verification=82Le34Flgtd15ojYhHlGF_6g72muSjamlMVThBOJpks&quot;
+  ...
+  github.com   TTL 82   TXT   &quot;v=spf1 ip4:192.30.252.0/22 include:spf.protection.outlook.com ...
+                                include:sendgrid.net ip4:62.253.2&quot; &quot;27.114 ip4:166.78.69.169 ... ~all&quot;</code></pre>
+<p>SPF-recorden er delt i to citerede strenge
+(<code>"…ip4:62.253.2" "27.114 …"</code>). En enkelt streng i en
+<code>TXT</code>-record kan højst være 255 byte, så længere værdier
+deles op. Scriptet læser strengene som længde-præfikserede blokke og
+viser dem samlet. Rækkefølgen af records varierer mellem opslag, da DNS
+ikke garanterer en rækkefølge. Kun et uddrag er vist her, da de 24
+records mest er verificeringstokens fra tredjepartstjenester.</p>
+<h3 id="lokal-navneopløsning-opgave-2">Lokal navneopløsning (opgave
+2)</h3>
+<p>Domænenavnet <code>network.test</code> er sat til at pege på loopback
+ved at tilføje en linje til <code>/etc/hosts</code> (kræver
+<code>sudo</code>):</p>
+<pre><code>$ echo &#39;127.0.0.1 network.test&#39; | sudo tee -a /etc/hosts
+127.0.0.1 network.test</code></pre>
+<p>Topdomænet <code>.test</code> er reserveret til test og findes aldrig
+på det rigtige internet, så navnet kan ikke komme i konflikt med et
+rigtigt domæne. Screenshottet viser fire kommandoer:</p>
+<figure>
+<img src="report/screenshots/modul2/03-lokal-navneoploesning.png"
+alt="Lokal navneopløsning: ping, getent og opslag mod den lokale resolver og mod 8.8.8.8" />
+<figcaption aria-hidden="true">Lokal navneopløsning: ping, getent og
+opslag mod den lokale resolver og mod 8.8.8.8</figcaption>
+</figure>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Kommando</th>
+<th>Resultat</th>
+<th>Betydning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ping -4 -c1 network.test</code></td>
+<td>Svar fra <code>127.0.0.1</code></td>
+<td>Navnet løses til loopback.</td>
+</tr>
+<tr>
+<td><code>getent -s files hosts network.test</code></td>
+<td><code>127.0.0.1 network.test</code></td>
+<td>Kun <code>/etc/hosts</code> kender navnet direkte.</td>
+</tr>
+<tr>
+<td><code>dns_lookup.py network.test -s 127.0.0.53</code></td>
+<td><code>CNAME localhost</code>, <code>A 127.0.0.1</code>,
+<code>AA=1</code></td>
+<td>Den lokale resolver (<code>systemd-resolved</code>) svarer selv, ud
+fra hosts-filen.</td>
+</tr>
+<tr>
+<td><code>dns_lookup.py network.test</code> (mod
+<code>8.8.8.8</code>)</td>
+<td><strong><code>NXDOMAIN</code></strong></td>
+<td>Det offentlige DNS kender ikke navnet.</td>
+</tr>
+</tbody>
+</table>
+<p>De to sidste linjer er beviset for, at opløsningen kun findes lokalt:
+samme navn, to resolvere, to forskellige svar.</p>
+<p>To observationer om, hvordan <code>systemd-resolved</code> opfører
+sig:</p>
+<ul>
+<li>Flaget <code>AA=1</code> (<em>authoritative answer</em>) betyder, at
+resolveren besvarer opslaget selv og ikke spørger videre. Den læser
+altså <code>/etc/hosts</code> og præsenterer indholdet som DNS-svar, så
+et DNS-værktøj som <code>dig</code> og mit script kan slå navnet op. Det
+fungerer derfor også over UDP på <code>127.0.0.53</code>.</li>
+<li>Svaret er <code>network.test CNAME localhost</code>, ikke en direkte
+<code>A</code>-record. Resolveren ser ud til at samle poster med samme
+IP-adresse, så <code>localhost</code> (som står først i hosts-filen)
+bliver det egentlige navn, og <code>network.test</code> bliver et alias.
+En konsekvens er, at et almindeligt <code>ping</code> uden
+<code>-4</code> svarer fra <code>::1</code> (IPv6), fordi
+<code>localhost</code> også har en IPv6-adresse. Derfor er
+<code>ping -4</code> brugt ovenfor, så svaret kommer fra
+<code>127.0.0.1</code>, som opgaven forudsætter.</li>
+</ul>
+<h3 id="dns-i-wireshark-opgave-4">DNS i Wireshark (opgave 4)</h3>
+<p>Et opslag af <code>github.com</code> mod den eksterne resolver
+<code>8.8.8.8</code> er fanget på <code>wlan0</code> med et
+<strong>capture-filter</strong>, så filen kun indeholder DNS-trafik til
+<code>8.8.8.8</code>:</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tshark</span> <span class="at">-i</span> wlan0 <span class="at">-f</span> <span class="st">&quot;udp port 53 and host 8.8.8.8&quot;</span> <span class="at">-w</span> report/evidens/modul2/dns-github.pcapng <span class="at">-P</span></span></code></pre></div>
+<p>Capturen indeholder to pakker: en forespørgsel og et svar.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Retning</th>
+<th>Indhold</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>192.168.20.194:43799 → 8.8.8.8:53</code></td>
+<td><strong>Query</strong>: <code>github.com</code>, type
+<code>A</code>, transaktions-ID <code>0x445c</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>8.8.8.8:53 → 192.168.20.194:43799</code></td>
+<td><strong>Response</strong>: <code>github.com → 140.82.121.4</code>,
+<strong>TTL 60</strong>, samme transaktions-ID <code>0x445c</code></td>
+</tr>
+</tbody>
+</table>
+<p>Screenshottene er taget i Wireshark. Felterne er markeret med røde
+rammer, som er tegnet ovenpå billederne bagefter, fordi Wireshark kun
+kan fremhæve ét felt ad gangen. MAC-adresserne på Ethernet-linjen er
+skjult.</p>
+<figure>
+<img src="report/screenshots/modul2/01-query-markeret.png"
+alt="Query: transaktions-ID og spørgsmål markeret" />
+<figcaption aria-hidden="true">Query: transaktions-ID og spørgsmål
+markeret</figcaption>
+</figure>
+<figure>
+<img src="report/screenshots/modul2/02-response-markeret.png"
+alt="Response: transaktions-ID, flags, svar og TTL markeret" />
+<figcaption aria-hidden="true">Response: transaktions-ID, flags, svar og
+TTL markeret</figcaption>
+</figure>
+<p>Transaktions-ID’et <code>0x445c</code> er ens i forespørgsel og svar,
+og det er det, der parrer dem. Svaret kommer fra port 53 til den
+tilfældige kildeport <code>43799</code>, som operativsystemet valgte til
+forespørgslen. Wireshark viser, at svaret ankom cirka 0,5 sekund efter
+forespørgslen.</p>
+<h2 id="sikkerhedsvinkel-1">Sikkerhedsvinkel</h2>
+<ul>
+<li><strong>Spoofing og cache poisoning.</strong> UDP har ingen
+forbindelse, så en angriber kan forsøge at sende et falsk svar. Skal det
+accepteres, skal det ramme det rigtige transaktions-ID (kun 16 bit,
+altså 65.536 muligheder) og den rigtige kildeport. Det er derfor,
+scriptet kun accepterer svar med det rigtige ID fra den resolver, det
+spurgte. Den tilfældige kildeport lægger endnu en gættebyrde ovenpå, og
+at en klient vælger både ID og port tilfældigt er en grundlæggende
+beskyttelse.</li>
+<li><strong>Ingen verifikation.</strong> Selve DNS-svaret er ikke
+signeret. Klienten kan ikke se, om et svar er ægte, bare at det passer
+til forespørgslen. Løsninger som DNSSEC findes, men er ikke brugt
+her.</li>
+<li><strong>Parsing af upålidelig input.</strong> Et DNS-svar er data
+fra netværket og kan være misdannet. Derfor kontrollerer scriptet
+længder og har en grænse for antal pointer-hop. En pointer, der peger
+tilbage på sig selv, ville ellers give en uendelig løkke.</li>
+<li><strong><code>TXT</code> og tunneling.</strong>
+<code>TXT</code>-records kan rumme vilkårlig tekst, og DNS-trafik
+inspiceres sjældent nøje. Det er en grund til, at DNS bruges til at
+smugle data ind og ud.</li>
+</ul>
+<h2 id="delkonklusion-1">Delkonklusion</h2>
+<p>Modulet viser, at DNS ikke er magi: et opslag er en lille,
+veldefineret binær pakke, og den kan bygges og læses med få linjer kode.
+Det, jeg fandt mest læreværdigt, var
+<strong>pointer-komprimeringen</strong> (<code>c0 0c</code>), som ikke
+er nævnt i mange oversigter, men som er nødvendig for at læse ethvert
+svar med flere records, og at et <strong>svar kan være afkortet</strong>
+og kræve et skift fra UDP til TCP. Det forbinder modul 1 og 2.</p>
+<p>At læse svaret i Wireshark og i de rå bytes gjorde det tydeligt, at
+<code>TTL</code> er cachens levetid og ikke en fast egenskab ved en
+record, og at <code>A</code>, <code>CNAME</code>, <code>MX</code>,
+<code>TXT</code> og <code>NS</code> har hver deres rolle. Den lokale
+navneopløsning viste, at <code>/etc/hosts</code> overstyrer det
+offentlige DNS, og at <code>systemd-resolved</code> gør hosts-filen
+synlig som rigtige DNS-svar. Det er praktisk til test, men det er også
+en påmindelse om, hvor let navneopløsning kan omdirigeres på en maskine
+med lokale rettigheder.</p>
+<h2 id="oprydning">Oprydning</h2>
+<p>Linjen <code>127.0.0.1 network.test</code> i <code>/etc/hosts</code>
+er en ændring af systemet uden for projektet og skal fjernes, når
+opgaven er afleveret:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> sed <span class="at">-i</span> <span class="st">&#39;/network.test/d&#39;</span> /etc/hosts</span></code></pre></div>
+</body>
+</html>
